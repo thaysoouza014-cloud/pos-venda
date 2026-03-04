@@ -42,13 +42,41 @@ button {
 <h3>Novo Cliente</h3>
 <input type="text" id="nome" placeholder="Nome"><br><br>
 <input type="text" id="telefone" placeholder="Telefone"><br><br>
-<button onclick="criarCard()" class="btn-adicionar">Adicionar</button>
+<button onclick="criarCard()" class="btn-adicionar">
+    ✨ Adicionar
+</button>
 
 <style>
 .btn-adicionar {
-    border-radius: 20px;
+    background: linear-gradient(135deg, #7C3AED, #A855F7);
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    box-shadow: 0 8px 20px rgba(124, 58, 237, 0.5);
+    transition: all 0.3s ease;
 }
-</style></div> 
+
+.btn-adicionar:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 12px 25px rgba(124, 58, 237, 0.7);
+}
+
+.btn-adicionar:active {
+    transform: scale(0.98);
+}
+</style>
+}
+
+.btn-adicionar:hover {
+    opacity: 0.85;
+    transform: scale(1.05);
+}
+</style>
 
 <div class="coluna" id="fase1">
 <h3>Aguardando Contato</h3>
