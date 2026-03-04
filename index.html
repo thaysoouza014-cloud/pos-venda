@@ -7,7 +7,7 @@
 <style>
 body {
     font-family: Arial;
-    background-color: #f4f4f4;
+    background-color: #8E6AD8;
     display: flex;
     gap: 20px;
     padding: 20px;
@@ -37,6 +37,14 @@ button {
 
 <body>
 
+    
+<div class="coluna">
+<h3>Novo Cliente</h3>
+<input type="text" id="nome" placeholder="Nome"><br><br>
+<input type="text" id="telefone" placeholder="Telefone"><br><br>
+<button onclick="criarCard()">Adicionar</button>
+</div> 
+
 <div class="coluna" id="fase1">
 <h3>Aguardando Contato</h3>
 </div>
@@ -47,13 +55,6 @@ button {
 
 <div class="coluna" id="fase3">
 <h3>Finalizado</h3>
-</div>
-
-<div class="coluna">
-<h3>Novo Cliente</h3>
-<input type="text" id="nome" placeholder="Nome"><br><br>
-<input type="text" id="telefone" placeholder="Telefone"><br><br>
-<button onclick="criarCard()">Adicionar</button>
 </div>
 
 <script>
