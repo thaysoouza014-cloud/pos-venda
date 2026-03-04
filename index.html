@@ -2,101 +2,129 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Pós-Venda</title>
+<title>Pós-Venda Kanban</title>
 
 <style>
 body {
     font-family: Arial, sans-serif;
-    background: linear-gradient(180deg, #8E6AD8, #C4B5FD);
+    background: linear-gradient(135deg, #7C3AED, #C4B5FD);
+    margin: 0;
+    padding: 20px;
+}
+
+/* Layout Kanban */
+.kanban {
     display: flex;
     gap: 20px;
-    padding: 20px;
+    align-items: flex-start;
 }
 
 /* Colunas */
 .coluna {
-    background: #fff;
+    background: #f9f9ff;
+    width: 280px;
+    border-radius: 15px;
     padding: 15px;
-    width: 250px;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+}
+
+.coluna h3 {
+    text-align: center;
+    margin-top: 0;
+    background: linear-gradient(135deg, #7C3AED, #A855F7);
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+/* Área scroll */
+.cards {
+    overflow-y: auto;
+    margin-top: 10px;
 }
 
 /* Cards */
 .card {
-    background: #f3f0ff;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 10px;
+    background: white;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    animation: aparecer 0.3s ease-in-out;
+}
+
+@keyframes aparecer {
+    from {opacity:0; transform: translateY(10px);}
+    to {opacity:1; transform: translateY(0);}
 }
 
 /* Inputs */
-input {
+input, textarea {
     width: 100%;
     padding: 8px;
     border-radius: 8px;
     border: 1px solid #ccc;
+    margin-bottom: 8px;
 }
 
-/* Botão principal chamativo */
+/* Botão principal */
 .btn-adicionar {
     background: linear-gradient(135deg, #7C3AED, #A855F7);
     color: white;
     border: none;
-    padding: 14px;
-    border-radius: 50px;
+    padding: 12px;
+    border-radius: 30px;
     cursor: pointer;
-    font-size: 14px;
     font-weight: bold;
-    letter-spacing: 1px;
-    box-shadow: 0 8px 20px rgba(124, 58, 237, 0.5);
-    transition: all 0.3s ease;
-    width: 100%;
+    transition: 0.3s;
 }
 
 .btn-adicionar:hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 12px 25px rgba(124, 58, 237, 0.7);
-}
-
-.btn-adicionar:active {
-    transform: scale(0.95);
+    transform: scale(1.05);
 }
 
 /* Botões dos cards */
 .card button {
     margin-top: 5px;
     width: 100%;
-    border-radius: 20px;
     border: none;
     padding: 6px;
+    border-radius: 20px;
     cursor: pointer;
+    background: #E9D5FF;
 }
 </style>
 </head>
 
 <body>
 
+<div class="kanban">
+
 <div class="coluna">
 <h3>Novo Cliente</h3>
-<input type="text" id="nome" placeholder="Nome"><br><br>
-<input type="text" id="telefone" placeholder="Telefone"><br><br>
-
-<button onclick="criarCard()" class="btn-adicionar">
-    ✨ Adicionar
-</button>
+<input type="text" id="nome" placeholder="Nome">
+<input type="text" id="telefone" placeholder="Telefone">
+<button onclick="criarCard()" class="btn-adicionar">✨ Adicionar</button>
 </div>
 
-<div class="coluna" id="fase1">
-<h3>Aguardando Contato</h3>
+<div class="coluna">
+<h3>Aguardando</h3>
+<div class="cards" id="fase1"></div>
 </div>
 
-<div class="coluna" id="fase2">
+<div class="coluna">
 <h3>Em Contato</h3>
+<div class="cards" id="fase2"></div>
 </div>
 
-<div class="coluna" id="fase3">
+<div class="coluna">
 <h3>Finalizado</h3>
+<div class="cards" id="fase3"></div>
+</div>
+
 </div>
 
 <script>
@@ -111,10 +139,10 @@ function criarCard() {
 
     card.innerHTML = `
         <strong>${nome}</strong><br>
-        ${telefone}<br><br>
-        <textarea placeholder="Comentário" style="width:100%; border-radius:8px;"></textarea><br>
-        <button onclick="mover(this, 'fase2')">Atender</button>
-        <button onclick="mover(this, 'fase3')">Finalizar</button>
+        ${telefone}<br>
+        <textarea placeholder="Comentário"></textarea>
+        <button onclick="mover(this, 'fase2')">➡ Em Contato</button>
+        <button onclick="mover(this, 'fase3')">✔ Finalizar</button>
     `;
 
     document.getElementById("fase1").appendChild(card);
@@ -128,9 +156,6 @@ function mover(botao, fase) {
     document.getElementById(fase).appendChild(card);
 }
 </script>
-
-</body>
-</html>
 
 </body>
 </html>
