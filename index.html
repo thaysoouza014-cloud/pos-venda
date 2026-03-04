@@ -6,59 +6,52 @@
 
 <style>
 body {
-    font-family: Arial;
-    background-color:#8E6AD8;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(180deg, #8E6AD8, #C4B5FD);
     display: flex;
     gap: 20px;
     padding: 20px;
 }
 
+/* Colunas */
 .coluna {
     background: #fff;
-    padding: 10px;
+    padding: 15px;
     width: 250px;
-    border-radius: 8px;
-    box-shadow: 0 0 5px #ccc;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
 
+/* Cards */
 .card {
-    background: #e9e9e9;
+    background: #f3f0ff;
     padding: 10px;
     margin-bottom: 10px;
-    border-radius: 6px;
+    border-radius: 10px;
 }
 
-button {
-    margin-top: 5px;
+/* Inputs */
+input {
     width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
 }
-</style>
-</head>
 
-<body>
-
-    
-<div class="coluna">
-<h3>Novo Cliente</h3>
-<input type="text" id="nome" placeholder="Nome"><br><br>
-<input type="text" id="telefone" placeholder="Telefone"><br><br>
-<button onclick="criarCard()" class="btn-adicionar">
-    ✨ Adicionar
-</button>
-
-<style>
+/* Botão principal chamativo */
 .btn-adicionar {
     background: linear-gradient(135deg, #7C3AED, #A855F7);
     color: white;
     border: none;
-    padding: 14px 28px;
+    padding: 14px;
     border-radius: 50px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
     letter-spacing: 1px;
     box-shadow: 0 8px 20px rgba(124, 58, 237, 0.5);
     transition: all 0.3s ease;
+    width: 100%;
 }
 
 .btn-adicionar:hover {
@@ -67,16 +60,32 @@ button {
 }
 
 .btn-adicionar:active {
-    transform: scale(0.98);
-}
-</style>
+    transform: scale(0.95);
 }
 
-.btn-adicionar:hover {
-    opacity: 0.85;
-    transform: scale(1.05);
+/* Botões dos cards */
+.card button {
+    margin-top: 5px;
+    width: 100%;
+    border-radius: 20px;
+    border: none;
+    padding: 6px;
+    cursor: pointer;
 }
 </style>
+</head>
+
+<body>
+
+<div class="coluna">
+<h3>Novo Cliente</h3>
+<input type="text" id="nome" placeholder="Nome"><br><br>
+<input type="text" id="telefone" placeholder="Telefone"><br><br>
+
+<button onclick="criarCard()" class="btn-adicionar">
+    ✨ Adicionar
+</button>
+</div>
 
 <div class="coluna" id="fase1">
 <h3>Aguardando Contato</h3>
@@ -103,7 +112,7 @@ function criarCard() {
     card.innerHTML = `
         <strong>${nome}</strong><br>
         ${telefone}<br><br>
-        <textarea placeholder="Comentário"></textarea><br>
+        <textarea placeholder="Comentário" style="width:100%; border-radius:8px;"></textarea><br>
         <button onclick="mover(this, 'fase2')">Atender</button>
         <button onclick="mover(this, 'fase3')">Finalizar</button>
     `;
@@ -119,6 +128,9 @@ function mover(botao, fase) {
     document.getElementById(fase).appendChild(card);
 }
 </script>
+
+</body>
+</html>
 
 </body>
 </html>
