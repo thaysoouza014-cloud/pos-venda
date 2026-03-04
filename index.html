@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Pós-Venda Kanban</title>
+<title>Pós-Venda Kanban PRO</title>
 
 <style>
 body {
@@ -12,56 +12,59 @@ body {
     padding: 20px;
 }
 
-/* Layout Kanban */
 .kanban {
     display: flex;
     gap: 20px;
     align-items: flex-start;
 }
 
-/* Colunas */
 .coluna {
     background: #f9f9ff;
-    width: 280px;
+    width: 300px;
     border-radius: 15px;
     padding: 15px;
     box-shadow: 0 8px 25px rgba(0,0,0,0.15);
     display: flex;
     flex-direction: column;
-    max-height: 80vh;
+    max-height: 85vh;
 }
 
 .coluna h3 {
     text-align: center;
-    margin-top: 0;
+    margin: 0;
     background: linear-gradient(135deg, #7C3AED, #A855F7);
     color: white;
     padding: 10px;
     border-radius: 10px;
 }
 
-/* Área scroll */
+.contador {
+    text-align: center;
+    font-size: 14px;
+    margin-top: 5px;
+    font-weight: bold;
+}
+
 .cards {
     overflow-y: auto;
     margin-top: 10px;
+    min-height: 50px;
 }
 
-/* Cards */
+/* CARD */
 .card {
     background: white;
     padding: 12px;
     margin-bottom: 12px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    animation: aparecer 0.3s ease-in-out;
+    cursor: grab;
 }
 
-@keyframes aparecer {
-    from {opacity:0; transform: translateY(10px);}
-    to {opacity:1; transform: translateY(0);}
+.card:active {
+    cursor: grabbing;
 }
 
-/* Inputs */
 input, textarea {
     width: 100%;
     padding: 8px;
@@ -70,7 +73,6 @@ input, textarea {
     margin-bottom: 8px;
 }
 
-/* Botão principal */
 .btn-adicionar {
     background: linear-gradient(135deg, #7C3AED, #A855F7);
     color: white;
@@ -86,7 +88,6 @@ input, textarea {
     transform: scale(1.05);
 }
 
-/* Botões dos cards */
 .card button {
     margin-top: 5px;
     width: 100%;
@@ -94,7 +95,11 @@ input, textarea {
     padding: 6px;
     border-radius: 20px;
     cursor: pointer;
-    background: #E9D5FF;
+}
+
+.btn-excluir {
+    background: #ff4d4d;
+    color: white;
 }
 </style>
 </head>
@@ -112,49 +117,111 @@ input, textarea {
 
 <div class="coluna">
 <h3>Aguardando</h3>
+<div class="contador" id="count-fase1">0 clientes</div>
 <div class="cards" id="fase1"></div>
 </div>
 
 <div class="coluna">
 <h3>Em Contato</h3>
+<div class="contador" id="count-fase2">0 clientes</div>
 <div class="cards" id="fase2"></div>
 </div>
 
 <div class="coluna">
 <h3>Finalizado</h3>
+<div class="contador" id="count-fase3">0 clientes</div>
 <div class="cards" id="fase3"></div>
 </div>
 
 </div>
 
 <script>
+let dados = JSON.parse(localStorage.getItem("kanbanClientes")) || [];
+
+function salvar() {
+    localStorage.setItem("kanbanClientes", JSON.stringify(dados));
+}
+
+function atualizarContadores() {
+    ["fase1","fase2","fase3"].forEach(fase => {
+        let total = document.getElementById(fase).children.length;
+        document.getElementById("count-"+fase).innerText = total + " clientes";
+    });
+}
+
 function criarCard() {
     let nome = document.getElementById("nome").value;
     let telefone = document.getElementById("telefone").value;
-
     if(nome === "") return;
 
-    let card = document.createElement("div");
-    card.className = "card";
+    let cliente = {
+        id: Date.now(),
+        nome,
+        telefone,
+        comentario: "",
+        fase: "fase1"
+    };
 
-    card.innerHTML = `
-        <strong>${nome}</strong><br>
-        ${telefone}<br>
-        <textarea placeholder="Comentário"></textarea>
-        <button onclick="mover(this, 'fase2')">➡ Em Contato</button>
-        <button onclick="mover(this, 'fase3')">✔ Finalizar</button>
-    `;
-
-    document.getElementById("fase1").appendChild(card);
-
+    dados.push(cliente);
+    salvar();
+    renderizar();
     document.getElementById("nome").value = "";
     document.getElementById("telefone").value = "";
 }
 
-function mover(botao, fase) {
-    let card = botao.parentElement;
-    document.getElementById(fase).appendChild(card);
+function renderizar() {
+    document.querySelectorAll(".cards").forEach(c => c.innerHTML = "");
+
+    dados.forEach(cliente => {
+        let card = document.createElement("div");
+        card.className = "card";
+        card.draggable = true;
+        card.dataset.id = cliente.id;
+
+        card.innerHTML = `
+            <strong>${cliente.nome}</strong><br>
+            ${cliente.telefone}<br>
+            <textarea placeholder="Comentário">${cliente.comentario}</textarea>
+            <button class="btn-excluir" onclick="excluir(${cliente.id})">🗑 Excluir</button>
+        `;
+
+        card.querySelector("textarea").addEventListener("input", e => {
+            cliente.comentario = e.target.value;
+            salvar();
+        });
+
+        card.addEventListener("dragstart", dragStart);
+
+        document.getElementById(cliente.fase).appendChild(card);
+    });
+
+    atualizarContadores();
 }
+
+function excluir(id) {
+    dados = dados.filter(c => c.id !== id);
+    salvar();
+    renderizar();
+}
+
+/* DRAG AND DROP */
+function dragStart(e) {
+    e.dataTransfer.setData("id", e.target.dataset.id);
+}
+
+document.querySelectorAll(".cards").forEach(coluna => {
+    coluna.addEventListener("dragover", e => e.preventDefault());
+    coluna.addEventListener("drop", e => {
+        e.preventDefault();
+        let id = e.dataTransfer.getData("id");
+        let cliente = dados.find(c => c.id == id);
+        cliente.fase = coluna.id;
+        salvar();
+        renderizar();
+    });
+});
+
+renderizar();
 </script>
 
 </body>
